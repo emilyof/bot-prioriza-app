@@ -1,0 +1,27 @@
+[flake8]
+max-line-length = 88
+
+extend-ignore = E203, W503, E266, E501
+
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    build,
+    dist,
+    *.egg-info,
+    .pytest_cache,
+    .mypy_cache
+
+per-file-ignores =
+    app/prompts/ai_prompts.py:E501
+    app/messages/bot_messages.py:E501
+    app/domain/scoring_logic.py:E501
+    __init__.py:F401
+
+max-complexity = 15
+show-source = True
+statistics = True
+count = True

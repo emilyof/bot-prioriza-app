@@ -1,0 +1,20 @@
+# Environment Variables
+.env
+.env.*
+.env.local
+.env.production
+!.env.example
+
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Test / tooling
+.pytest_cache/
+.coverage
+
+# OS
+.DS_Store
