@@ -1,7 +1,10 @@
-# 🤖 Slack Bot de Priorização de Vulnerabilidades com IA
+# README - Vulnerability Prioritization Slack Bot with AI
 
-É um bot inteligente para Slack que automatiza a priorização de vulnerabilidades de segurança utilizando Inteligência Artificial. O sistema combina análise técnica (CVE, OWASP, CVSS) com impacto de negócio para gerar relatórios executivos completos e recomendar SLAs de correção.
+---
 
+## 🤖 Vulnerability Prioritization Slack Bot with AI
+
+An intelligent Slack bot that automates the prioritization of security vulnerabilities using Artificial Intelligence. The system combines technical analysis (CVE, OWASP, CVSS) with business impact to generate comprehensive executive reports and recommend remediation SLAs.
 
 ![Flake8](https://img.shields.io/badge/flake8-passing-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-121%20passed-brightgreen)
@@ -12,123 +15,70 @@
 
 ---
 
-## 🎯 Objetivo do Projeto
+### 🎯 Project Objective
 
-Auxiliar equipes de segurança a priorizar vulnerabilidades de forma objetiva, considerando:
- 
-- **Impacto técnico**: Severidade CVSS, exploitabilidade, presença em CISA KEV
-- **Impacto no negócio**: Criticidade do sistema, exposição de dados sensíveis, conformidade regulatória
-- **Recomendações automatizadas**: Sugestões de correção e mitigação geradas por IA
+To assist security teams in prioritizing vulnerabilities objectively, considering:
 
----
-
-## 🧠 Como o Bot Funciona
-
-#### Análise de Vulnerabilidades
-
-- **CVE única**: Análise detalhada de uma vulnerabilidade específica
-- **Lista de CVEs**: Priorização consolidada de múltiplas vulnerabilidades (via arquivo CSV/XLSX)
-- **Categoria OWASP**: Cálculo baseado em categorias OWASP Top 10
-- **Descrição livre**: Identificação automática de categoria OWASP via IA
-
-#### Scoring Inteligente
-
-- **Pontuação técnica (0-60)**: Baseada em CVSS, exploitabilidade, CISA KEV
-- **Pontuação de negócio (0-40)**: Coletada via perguntas interativas no Slack
-- **Classificação de risco**: Crítico, Alto, Médio, Baixo
-- **SLA sugerido**: Prazo recomendado para correção
-
-#### Recálculo Dinâmico
-
-- Permite ajuste de pontuação técnica com justificativa
-- IA recalcula score considerando contexto adicional
-- Histórico de recálculos preservado
-
-#### Relatórios Executivos
-
-- Relatório individual detalhado (CVE/OWASP/Descrição)
-- Relatório consolidado para listas de CVEs
-- Recomendações de correção e mitigação geradas por IA
-- Exportação em formato Markdown  
+- **Technical impact**: CVSS severity, exploitability, presence in CISA KEV
+- **Business impact**: System criticality, sensitive data exposure, regulatory compliance
+- **Automated recommendations**: AI-generated remediation and mitigation suggestions
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+### 🧠 How the Bot Works
 
-Estrutura pensada para **facilitar manutenção, testes e evolução**:
+#### Vulnerability Analysis
+
+- **Single CVE**: Detailed analysis of a specific vulnerability
+- **CVE list**: Consolidated prioritization of multiple vulnerabilities (via CSV/XLSX file)
+- **OWASP category**: Calculation based on OWASP Top 10 categories
+- **Free-text description**: Automatic identification of OWASP category via AI
+
+#### Intelligent Scoring
+
+- **Technical score (0-60)**: Based on CVSS, exploitability, CISA KEV
+- **Business score (0-40)**: Collected via interactive questions in Slack
+- **Risk classification**: Critical, High, Medium, Low
+- **Suggested SLA**: Recommended timeframe for remediation
+
+#### Dynamic Recalculation
+
+- Allows adjustment of technical score with justification
+- AI recalculates score considering additional context
+- Recalculation history preserved
+
+#### Executive Reports
+
+- Detailed individual report (CVE/OWASP/Description)
+- Consolidated report for CVE lists
+- AI-generated remediation and mitigation recommendations
+- Export in Markdown format
+
+---
+
+### 🏗️ Project Architecture
+
+Structure designed to **facilitate maintenance, testing, and evolution**:
+
 ```
 bot-prioriza-ai/
 
 ├── .github/
-│   └── workflows/
-│       └── ci.yml                          # Pipeline CI/CD completo
-│
+│   └── workflows/                          # Pipeline CI/CD completo
 ├── app/
-│   │
 │   ├── adapters/                           # Providers de IA
-│   │   ├── base_ai_provider.py             # Interface abstrata para providers
-│   │   ├── groq_ai_provider.py             # Provider Groq AI
-│   │   └── internal_ai_provider.py         # Provider IA interna
-│   │
 │   ├── core/                               # Lógica central do bot
-│   │   ├── orchestrator.py                 # Orquestrador principal de fluxos
-│   │   ├── conversation_manager.py         # Gerenciamento de estado conversacional
-│   │   ├── vulnerability_types.py          # Enums de tipos de vulnerabilidade
-│   │   └── scoring_logic.py                # Lógica de cálculo de scores
-│   │
 │   ├── handlers/                           # Handlers especializados
-│   │   ├── base.py                         # Handler base com métodos comuns
-│   │   ├── action.py                       # Handler de ações (botões)
-│   │   ├── conversation.py                 # Handler de conversação (OWASP, descrição)
-│   │   ├── message_file.py                 # Handler de mensagens e arquivos
-│   │   └── scoring_report.py               # Handler de scoring e relatórios
-│   │
 │   ├── messages/                           # Templates de mensagens
-│   │   └── bot_messages.py                 # Todas as mensagens do bot
-│   │
 │   ├── services/                           # Serviços externos
-│   │   ├── ai_service.py                   # Serviço de IA (recomendações, scoring)
-│   │   ├── vulnerability_service.py        # Integração com APIs de vulnerabilidades
-│   │   ├── file_processing_service.py      # Processamento de arquivos CSV/XLSX
-│   │   └── owasp_service.py                # Resolução de categorias OWASP
-│   │
 │   ├── slack/                              # Integração Slack
-│   │   └── listeners.py                    # Registro de listeners Slack
-│   │
 │   └── utils/                              # Utilitários
-│       ├── helpers.py                      # Funções auxiliares gerais
-│       ├── input_validator.py              # Validação de entradas
-│       └── cache.py                        # Sistema de cache para APIs
-│
 ├── tests/                                  # Testes unitários
-│   ├── conftest.py                         # Fixtures compartilhadas
-│   ├── test_flow_cve_single.py             # Testes de fluxo CVE única
-│   ├── test_flow_cve_list.py               # Testes de fluxo lista de CVEs
-│   ├── test_flow_owasp.py                  # Testes de fluxo OWASP
-│   ├── test_flow_description.py            # Testes de fluxo descrição livre
-│   ├── test_flow_regressions.py            # Testes de regressão
-│   ├── test_scoring_logic.py               # Testes de lógica de scoring
-│   ├── test_conversation_manager.py        # Testes de gerenciamento de estado
-│   ├── test_vulnerability_service.py       # Testes de serviço de vulnerabilidades
-│   ├── test_ai_service.py                  # Testes de serviço de IA
-│   └── test_file_processing.py             # Testes de processamento de arquivos
-│
-├── logs/                                   # Logs da aplicação (gitignored)
-│   └── .gitkeep
-│
-├── .dockerignore                           # Arquivos ignorados no build Docker
-├── .env.example                            # Template de variáveis de ambiente
-├── .gitignore                              # Arquivos ignorados pelo Git
-├── docker-compose.yml                      # Orquestração Docker para deploy
-├── Dockerfile                              # Imagem Docker da aplicação
-├── main.py                                 # Entry point da aplicação
-├── requirements.txt                        # Dependências Python
-├── README.md                               # Documentação principal
-└── LICENSE                                 # Licença MIT
 ```  
 
 ---
-#### 🔄 Fluxo de Execução - Diagrama Geral de Arquitetura
+
+#### 🔄 Execution Flow - General Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -141,10 +91,10 @@ bot-prioriza-ai/
 │                      FLOW ORCHESTRATOR                              │
 │                  (Roteamento por estado)                            │
 │                                                                     │
-│  • Detecta tipo de entrada (CVE, OWASP, descrição, arquivo)        │
-│  • Gerencia estado conversacional por user_id                      │
-│  • Garante idempotência por thread_ts                              │
-│  • Delega para handlers especializados                             │
+│  • Detecta tipo de entrada (CVE, OWASP, descrição, arquivo)         │
+│  • Gerencia estado conversacional por user_id                       │
+│  • Garante idempotência por thread_ts                               │
+│  • Delega para handlers especializados                              │
 └────┬────────────────┬────────────────┬────────────────┬─────────────┘
      │                │                │                │
      ▼                ▼                ▼                ▼
@@ -159,213 +109,211 @@ bot-prioriza-ai/
 ┌─────────────────────────────────────────────────────────────────────┐
 │                       SERVIÇOS EXTERNOS                             │
 │                                                                     │
-│  • VulnerabilityService → CISA KEV, EPSS, NVD, VulnCheck           │
-│  • AIService → Groq AI / Internal AI                               │
-│  • FileProcessingService → Extração de CVEs                        │
+│  • VulnerabilityService → CISA KEV, EPSS, NVD, VulnCheck            │
+│  • AIService → Groq AI / Internal AI                                │
+│  • FileProcessingService → Extração de CVEs                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 🛠️ Tecnologias Utilizadas
+#### 🛠️ Technologies Used
 
 #### **Backend**
-
 - **Python 3.11+**
-- **Slack Bolt SDK**: Integração com Slack
-- **Requests**: Chamadas HTTP para APIs externas
+- **Slack Bolt SDK**: Slack integration
+- **Requests**: HTTP calls to external APIs
 
-#### **Inteligência Artificial**
+#### **Artificial Intelligence**
+- **Groq AI**: AI provider for scoring and recommendations
 
-- **Groq AI**: Provider de IA para scoring e recomendações
-
-#### **APIs Externas**
-
-- **VulnCheck API**: Dados de CVEs (CVSS, descrição, exploitabilidade)
-- **CISA KEV**: Lista de vulnerabilidades conhecidas exploradas
+#### **External APIs**
+- **VulnCheck API**: CVE data (CVSS, description, exploitability)
+- **CISA KEV**: Known Exploited Vulnerabilities list
 - **EPSS**: Exploit Prediction Scoring System
 - **NVD**: National Vulnerability Database
 
-#### **Infraestrutura**
+#### **Infrastructure**
+- **Docker**: Containerization
+- **AWS EC2 (t3.micro)**: Hosting (Free Tier eligible)
+- **GitHub Actions**: Automated CI/CD
 
-- **Docker**: Containerização
-- **AWS EC2 (t3.micro)**: Hospedagem (Free Tier eligible)
-- **GitHub Actions**: CI/CD automatizado
-
-#### **Testes**
-
-- **pytest**: Framework de testes unitários
+#### **Testing**
+- **pytest**: Unit testing framework
 
 ---
 
-### 📦 Instalação e Configuração
+#### 📦 Installation and Configuration
 
-#### **Pré-requisitos**
+#### **Prerequisites**
 
 - Python 3.11+
-- Docker (opcional)
-- Conta Slack com permissões de administrador
-- Token VulnCheck API
-- Token de IA (Groq ou provider interno)
+- Docker (optional)
+- Slack account with administrator permissions
+- VulnCheck API token
+- AI token (Groq or internal provider)
 
-#### **1. Clonar o Repositório**
+#### **1. Clone the Repository**
 
 ```bash
 git clone https://github.com/emilyof/bot-prioriza-ai
 cd bot-prioriza-ai
 ```
 
-#### **2. Crie o Ambiente Virtual**
+#### **2. Create Virtual Environment**
 
-```
+```bash
 python3 -m venv venv
 source venv/bin/activate  # Linux/Mac
 
-# ou
+## or
 venv\Scripts\activate  # Windows
 ```
 
-#### **3. Configurar Variáveis de Ambiente**
+#### **3. Configure Environment Variables**
 
-Crie um arquivo `.env` baseado no `.env.example`:
+Create a `.env` file based on `.env.example`:
 
 ```bash
-## Slack
+### Slack
 SLACK_BOT_TOKEN=xoxb-your-bot-token
 SLACK_APP_TOKEN=xapp-your-app-token
 
-## AI Provider
-AI_PROVIDER=groq  
+### AI Provider
+AI_PROVIDER=groq
 AI_API_URL=https://api.groq.com/v1
 AI_API_TOKEN=your-groq-api-token
-AI_MODEL_OVERRIDE=llama-3.1-70b-versatile  # opicional
+AI_MODEL_OVERRIDE=llama-3.1-70b-versatile  # optional
 
-## VulnCheck
+### VulnCheck
 VULNCHECK_TOKEN=your-vulncheck-token
 ```
 
-#### **4. Configure o App Slack**
+#### **4. Configure Slack App**
 
-- Acesse api.slack.com/apps
-- Crie um novo app (From scratch)
-- Ative Socket Mode em **Settings** → **Socket Mode**
-- Adicione os seguintes Bot Token Scopes em OAuth & Permissions:
+- Access api.slack.com/apps
+- Create a new app (From scratch)
+- Enable Socket Mode in **Settings** → **Socket Mode**
+- Add the following Bot Token Scopes in OAuth & Permissions:
 
-``app_mentions:read``
+`app_mentions:read`
 
-``chat:write``
+`chat:write`
 
-``files:read``
+`files:read`
 
-``im:history``
+`im:history`
 
-``im:read``
+`im:read`
 
-``im:write``
+`im:write`
 
-- Instale o app no workspace
-- Copie os tokens para o .env:
+- Install the app in your workspace
 
-Bot Token: ``xoxb-...`` (OAuth & Permissions)
+- Copy the tokens to .env:
 
-App Token: ``xapp-...`` (Basic Information → App-Level Tokens)
+Bot Token: `xoxb-...` (OAuth & Permissions)
 
+App Token: `xapp-...` (Basic Information → App-Level Tokens)
 
-#### **5. Instalar Dependências**
+#### **5. Install Dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### **6. Executar Localmente**
+#### **6. Run Locally**
 
 ```bash
 python main.py
 ```
 
-#### **7. Executar com Docker**
+#### **7. Run with Docker**
 
 ```bash
-## Build
+### Build
 docker build -t bot-prioriza-ai .
-## Run
+
+### Run
 docker run --env-file .env bot-prioriza-ai
 ```
 
 ---
 
-### 🧪 Testes
+#### 🧪 Testing
 
-#### **Executar Todos os Testes**
+#### **Run All Tests**
 
 ```bash
 pytest
 ```
 
-#### **Executar com Cobertura**
+#### **Run with Coverage**
 
 ```bash
 pytest --cov=app --cov-report=html
 ```
 
-#### **Executar Testes Específicos**
+#### **Run Specific Tests**
 
 ```bash
-## Testes de scoring
+### Scoring tests
 pytest tests/test_scoring_logic.py
 
-## Testes de fluxo
+### Flow tests
 pytest tests/test_flow_cve_single.py
 
-## Testes de guard-rails
+### Guard-rails tests
 pytest tests/test_scoring_guard_rails.py
 ```
 
-#### **Cobertura de Testes**
+#### **Test Coverage**
 
-O projeto possui **testes unitários e de integração** orientados a fluxo e risco,
-priorizando confiabilidade e manutenção.
+The project has **unit and integration tests** focused on flow and risk,
 
-- **Scoring Logic**: Cálculo de pontuações e classificação de risco
-- **Guard-Rails**: Validação de limites técnicos
-- **Fluxos**: CVE única, lista de CVEs, OWASP, descrição
-- **Validação de Entrada**: Detecção de injeção e sanitização
-- **Regressão**: Casos críticos de fluxo
+prioritizing reliability and maintainability.
 
----
-
-### 🔒 Segurança
-
-#### **Guard-Rails Implementados**
-
-- **Validação de entrada**: Detecção de injeção de código e path traversal
-- **Sanitização de texto**: Remoção de caracteres perigosos
-- **Limites de pontuação**: Score técnico entre 30-60, negócio entre 0-40
-- **Rate limiting**: Retry com backoff exponencial para APIs externas
-- **Normalização de IA**: Proteção contra respostas malformadas
-
-#### **Boas Práticas**
-
-- Tokens armazenados em variáveis de ambiente
-- Logs estruturados sem exposição de dados sensíveis
-- Validação de thread_ts para evitar cross-thread injection
-- Deduplicação de ações de botões
+- **Scoring Logic**: Score calculation and risk classification
+- **Guard-Rails**: Technical limit validation
+- **Flows**: Single CVE, CVE list, OWASP, description
+- **Input Validation**: Injection detection and sanitization
+- **Regression**: Critical flow cases
 
 ---
 
-## 👩‍💻 Autoria
+#### 🔒 Security
 
-**Emily Oliveira Ferrari**  
-Cybersecurity Analyst  
+#### **Implemented Guard-Rails**
 
+- **Input validation**: Code injection and path traversal detection
+- **Text sanitization**: Removal of dangerous characters
+- **Score limits**: Technical score between 30-60, business between 0-40
+- **Rate limiting**: Retry with exponential backoff for external APIs
+- **AI normalization**: Protection against malformed responses
 
-### 🤝 Colaboração
+#### **Best Practices**
 
-Agradecimento especial a **Cirano da Silva Gonçalves**, que auxiliou:
-
-- Na revisão de **testes em produção**
-- Na **integração com APIs externas** (NVD, VulnCheck, CISA KEV e similares)
-- Em discussões técnicas sobre **fluxo conversacional, scoring e confiabilidade**
+- Tokens stored in environment variables
+- Structured logs without sensitive data exposure
+- thread_ts validation to prevent cross-thread injection
+- Button action deduplication
 
 ---
-**⚡️ Desenvolvido com foco em segurança, escalabilidade e experiência do usuário.**
+
+### 👩‍💻 Authorship
+
+**Emily Oliveira Ferrari**
+
+Cybersecurity Analyst
+
+#### 🤝 Collaboration
+
+Special thanks to **Cirano da Silva Gonçalves**, who assisted with:
+
+- **Production testing** review
+- **External API integration** (NVD, VulnCheck, CISA KEV and similar)
+- Technical discussions on **conversational flow, scoring, and reliability**
+
+---
+
+**⚡️ Developed with a focus on security, scalability, and user experience.**
