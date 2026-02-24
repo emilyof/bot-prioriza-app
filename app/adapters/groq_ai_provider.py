@@ -51,7 +51,7 @@ class GroqAIProvider(AIProvider):
             "Content-Type": "application/json",
         }
 
-        url = f"{self.base_url}/chat/completions"
+        url = f"{self.base_url}/openai/v1/chat/completions"
 
         response = requests.post(url, headers=headers, json=payload, timeout=30)
 

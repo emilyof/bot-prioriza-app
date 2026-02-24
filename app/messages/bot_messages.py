@@ -10,7 +10,7 @@ class BotMessages:
 
     WELCOME_MESSAGE = (
         "Olá! Sou o bot de priorização de vulnerabilidades. 👋\n\n"
-        "Posso te ajudar a calcular o risco de **vulnerabilidades de segurança** "
+        "Posso te ajudar a priorizar a *vulnerabilidades de segurança* "
         "com base em impacto técnico e impacto no negócio.\n\n"
         "*Como iniciar uma análise:*\n"
         "• Envie um *ID de CVE* (ex: `CVE-2023-12345`).\n"
@@ -25,12 +25,12 @@ class BotMessages:
     # ==========================================================
 
     START_ANALYSIS_MESSAGE = (
-        "✅ Certo! Vou analisar **{input_type}** para *{identifier}*.\n"
+        "✅ Certo! Vou analisar *{input_type}* para *{identifier}*.\n"
         "Por favor, aguarde enquanto coleto os dados técnicos..."
     )
 
     START_CVE_LIST_ANALYSIS_MESSAGE = (
-        "✅ Certo! Vou analisar **Lista de CVEs**.\n"
+        "✅ Certo! Vou analisar *Lista de CVEs*.\n"
         "Por favor, aguarde enquanto coleto os dados técnicos..."
     )
 
@@ -40,7 +40,7 @@ class BotMessages:
     )
 
     NO_DATA_FOUND = (
-        "Não foi possível obter dados para **{input_type}** *{identifier}*.\n"
+        "Não foi possível obter dados para *{input_type}* *{identifier}*.\n"
         "Verifique a informação e tente novamente."
     )
 
@@ -72,7 +72,7 @@ class BotMessages:
     # ==========================================================
 
     SELECT_OWASP_CATEGORY_PROMPT = (
-        "Por favor, selecione qual categoria **OWASP Top 10** você deseja calcular:"
+        "Por favor, selecione qual categoria *OWASP Top 10* você deseja calcular:"
     )
 
     SELECT_OWASP_CATEGORY_TEXT = "Selecione uma categoria OWASP Top 10:"
@@ -97,7 +97,7 @@ class BotMessages:
     AI_SCORE_PRESENTATION = (
         "> *Pontuação Técnica sugerida pela IA*\n\n"
         "Com base na descrição:\n"
-        "→ **{original_description}**\n\n"
+        "→ *{original_description}*\n\n"
         "Pontuação técnica: *{score:.1f} / 60*\n"
         "Justificativa: _{justification}_\n\n"
         "Você concorda com essa pontuação?"

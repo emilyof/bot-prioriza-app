@@ -7,6 +7,7 @@
 
 # Python virtual environment
 .venv/
+.venv
 
 # Python cache
 __pycache__/
