@@ -244,9 +244,11 @@ class ScoringAndReportHandler(BaseHandler):
                 },
             )
 
+            preview_text = "\n".join(lines)
+
             self._send_message(
                 say,
-                text=None,
+                text=preview_text,
                 thread_ts=thread_ts,
                 blocks=self._priority_action_blocks("\n".join(lines)),
             )
@@ -325,7 +327,7 @@ class ScoringAndReportHandler(BaseHandler):
         # Próxima pergunta
         # ---------------------------------------
         if next_idx < len(BUSINESS_IMPACT_QUESTIONS_CONFIG):
-            _ = BUSINESS_IMPACT_QUESTIONS_CONFIG[next_idx]["text"].replace(
+            next_question = BUSINESS_IMPACT_QUESTIONS_CONFIG[next_idx]["text"].replace(
                 "{ID_OR_CATEGORY}",
                 (
                     state["identifier"]
@@ -334,13 +336,14 @@ class ScoringAndReportHandler(BaseHandler):
                 ),
             )
 
-            _ = self._progress_bar(next_idx + 1, len(BUSINESS_IMPACT_QUESTIONS_CONFIG))
+            progress = self._progress_bar(next_idx + 1, len(BUSINESS_IMPACT_QUESTIONS_CONFIG))
 
-            # self._send_message(
-            #     say,
-            #     f"*Etapa {next_idx + 1}*\n{progress}\n\n{next_question}",
-            #     thread_ts,
-            # )
+            self._send_message(
+                say,
+                f"*Etapa {next_idx + 1}*\n{progress}\n\n{next_question}",
+                thread_ts,
+            )
+
             return
 
         # ---------------------------------------
@@ -421,7 +424,7 @@ class ScoringAndReportHandler(BaseHandler):
 
         self._send_message(
             say,
-            text=None,
+            text=preview_text,
             thread_ts=thread_ts,
             blocks=self._priority_action_blocks(preview_text),
         )
@@ -563,7 +566,7 @@ class ScoringAndReportHandler(BaseHandler):
         )
 
         # CONTEXTO DE NEGÓCIO CORRETO
-        business_answers = state.get("business_qualitative_answers", {})
+        business_answers = state.get("business_qualitative_answers", [])
 
         ai_result = self.ai_service.recalculate_technical_score(
             original_technical_data=state["technical_score_data"],
@@ -594,8 +597,9 @@ class ScoringAndReportHandler(BaseHandler):
         )
 
         # Recalcular score final
-        business_score = state["business_score"]
-        final_score = new_score + business_score
+        business_score = float(state.get("business_score", 0))
+        final_score = max(0, min(new_score + business_score, 100))
+
         classification, sla = get_risk_classification(final_score)
 
         # Atualizar estado
@@ -638,7 +642,7 @@ class ScoringAndReportHandler(BaseHandler):
 
         self._send_message(
             say,
-            text=None,
+            text=preview_text,
             thread_ts=thread_ts,
             blocks=self._priority_action_blocks(preview_text),
         )
@@ -670,6 +674,25 @@ class ScoringAndReportHandler(BaseHandler):
             )
             return
 
+        # Garantir classificação e SLA (defensivo)
+        if not state.get("classification") or not state.get("sla"):
+            technical_score = state["technical_score_data"]["technical_subtotal"]
+            business_score = state["business_score"]
+
+            final_score = technical_score + business_score
+            classification, sla = get_risk_classification(final_score)
+
+            self.conversation_manager.update_state(
+                user_id,
+                {
+                    "final_score": final_score,
+                    "classification": classification,
+                    "sla": sla,
+                },
+            )
+
+            state = self.conversation_manager.get_state(user_id)
+
         # ==========================================================
         # Obter descrição
         # ==========================================================
@@ -683,6 +706,10 @@ class ScoringAndReportHandler(BaseHandler):
             description = self.ai_service.generate_owasp_category_description(
                 owasp_code=owasp_code,
                 owasp_title=owasp_title,
+            )
+        elif state["input_type"] == VulnerabilityType.AI_SCORING_DESCRIPTION:
+            description = state["technical_score_data"].get(
+                "description_ai", "Descrição informada pelo usuário."
             )
 
         # ==========================================================

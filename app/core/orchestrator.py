@@ -159,6 +159,26 @@ class FlowOrchestrator:
         # ROTEAMENTO POR ESTADO (ORDEM IMPORTA)
         # ======================================================
 
+        # Resposta após boas-vindas (início tardio)
+        if state and state.get("awaiting_initial_input"):
+            logger.info(f"[FLOW] Iniciando fluxo após boas-vindas para user {user_id}")
+
+            self.conversation_manager.update_state(
+                user_id,
+                {
+                    "awaiting_initial_input": False,
+                    "flow_started": True,
+                },
+            )
+
+            self.process_initial_message_intent(
+                user_id,
+                message_text,
+                thread_ts,
+                say,
+            )
+            return
+
         # Recálculo técnico (prioridade máxima)
         if self.conversation_manager.is_awaiting_recalculation_justification(user_id, thread_ts):
             self.scoring_and_report_handler.handle_recalculation_justification(
@@ -200,6 +220,11 @@ class FlowOrchestrator:
         if not message_text:
             self.message_and_file_handler._send_message(
                 say, self.messages.WELCOME_MESSAGE, thread_ts
+            )
+
+            self.conversation_manager.update_state(
+                user_id,
+                {"awaiting_initial_input": True},
             )
             return
 

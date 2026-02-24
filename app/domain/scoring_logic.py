@@ -63,15 +63,15 @@ def get_risk_classification(total_score):
         >>> get_risk_classification(75)
         ("P2 Alto", "30 dias úteis")
     """
-    if 90 <= total_score <= 100:
+    if total_score >= 90:
         return "P1 Crítico", "WAR ROOM, resolução imediata"
-    elif 70 <= total_score <= 89:
+    elif total_score >= 89:
         return "P2 Alto", "30 dias úteis"
-    elif 30 <= total_score <= 69:
+    elif total_score >= 69:
         return "P3 Médio", "60 dias úteis"
-    elif 10 <= total_score <= 29:
+    elif total_score >= 29:
         return "P4 Baixo", "90 dias úteis"
-    elif 0 <= total_score <= 9:
+    elif total_score >= 9:
         return "P4 Informativa", "Sem prazo definido"
 
     return "Desconhecida", "Não aplicável"
